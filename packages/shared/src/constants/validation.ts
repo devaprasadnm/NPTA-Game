@@ -8,8 +8,7 @@ import {
   MAX_ANSWER_LENGTH,
   MAX_CHAT_MESSAGE_LENGTH,
   ROOM_CODE_LENGTH,
-} from './game';
-
+} from './game.js';
 /** Regex to validate display name (alphanumeric, spaces, underscores, hyphens) */
 export const DISPLAY_NAME_REGEX = /^[a-zA-Z0-9 _-]+$/;
 

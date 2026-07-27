@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+/* ============================================
+   NPTA Design System — Global Styles
+   ============================================ */
+
+/* Custom Theme Variables */
+@theme {
+  --color-primary-50: #EEF2FF;
+  --color-primary-100: #E0E7FF;
+  --color-primary-200: #C7D2FE;
+  --color-primary-300: #A5B4FC;
+  --color-primary-400: #818CF8;
+  --color-primary-500: #6366F1;
+  --color-primary-600: #4F46E5;
+  --color-primary-700: #4338CA;
+  --color-primary-800: #3730A3;
+  --color-primary-900: #312E81;
+
+  --color-accent-400: #2DD4BF;
+  --color-accent-500: #14B8A6;
+  --color-accent-600: #0D9488;
+
+  --color-surface-dark: #0F172A;
+  --color-surface-dark-2: #1E293B;
+  --color-surface-dark-3: #334155;
+  --color-surface-light: #F8FAFC;
+  --color-surface-light-2: #F1F5F9;
+  --color-surface-light-3: #E2E8F0;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* Base styles */
+html {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply bg-surface-light text-slate-900 transition-colors duration-300;
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+body.dark {
+  @apply bg-surface-dark text-white;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-slate-700;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.dark .glass-light {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #6366F1, #8B5CF6, #A78BFA);
+}
+
+/* Gradient background */
+.gradient-bg {
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A78BFA 100%);
+}
+
+.gradient-bg-accent {
+  background: linear-gradient(135deg, #14B8A6 0%, #2DD4BF 100%);
+}
+
+/* Animated gradient */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient {
+  background: linear-gradient(270deg, #6366F1, #8B5CF6, #A78BFA, #C4B5FD, #8B5CF6, #6366F1);
+  background-size: 300% 300%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Timer pulse */
+@keyframes timer-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.timer-pulse {
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+
+/* Confetti colors */
+.confetti-gold { color: #FFD700; }
+.confetti-red { color: #FF6B6B; }
+.confetti-blue { color: #6366F1; }
+.confetti-green { color: #10B981; }
+.confetti-purple { color: #8B5CF6; }
+
+/* Mobile-first touch targets */
+@media (max-width: 640px) {
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+}
+
+/* Safe area for mobile browsers */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Disable text selection on game elements */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Input focus ring */
+input:focus, textarea:focus, select:focus {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+.dark input:focus, .dark textarea:focus, .dark select:focus {
+  @apply ring-offset-surface-dark;
+}

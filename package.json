@@ -1,0 +1,29 @@
+{
+  "name": "npta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NPTA - Name, Place, Thing, Animal, Profession - Multiplayer Word Game",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npx -y concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "npm run dev -w apps/client",
+    "dev:server": "npm run dev -w apps/server",
+    "build": "npm run build --workspaces --if-present",
+    "build:client": "npm run build -w apps/client",
+    "build:server": "npm run build -w apps/server",
+    "build:shared": "npm run build -w packages/shared",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:migrate": "npm run db:migrate -w apps/server",
+    "db:push": "npm run db:push -w apps/server",
+    "db:seed": "npm run db:seed -w apps/server",
+    "db:studio": "npm run db:studio -w apps/server",
+    "clean": "rimraf node_modules apps/*/node_modules packages/*/node_modules"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

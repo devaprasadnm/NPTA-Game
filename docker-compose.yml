@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: npta-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: npta
+      POSTGRES_USER: npta_user
+      POSTGRES_PASSWORD: npta_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U npta_user -d npta']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: npta-server
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      DATABASE_URL: postgresql://npta_user:npta_password@postgres:5432/npta?schema=public
+      DIRECT_URL: postgresql://npta_user:npta_password@postgres:5432/npta?schema=public
+      CORS_ORIGIN: http://localhost:5173
+      SESSION_SECRET: docker-dev-secret
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: npta-client
+    ports:
+      - '5173:80'
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:

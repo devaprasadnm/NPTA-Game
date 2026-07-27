@@ -1,0 +1,188 @@
+// ============================================
+// Prisma Schema — NPTA Database (SQLite for local / Postgres ready)
+// ============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------
+// Player — Guest users identified by UUID
+// ----------------------------------------
+model Player {
+  id          String        @id @default(uuid())
+  displayName String
+  avatarUrl   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  sessions    Session[]
+  roomPlayers RoomPlayer[]
+  answers     Answer[]
+  gameHistory GameHistory[]
+  stats       PlayerStats?
+  hostedRooms Room[]        @relation("HostedRooms")
+
+  @@index([displayName])
+}
+
+// ----------------------------------------
+// Session — UUID-based guest sessions
+// ----------------------------------------
+model Session {
+  id        String   @id @default(uuid())
+  playerId  String
+  token     String   @unique @default(uuid())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([playerId])
+  @@index([expiresAt])
+}
+
+// ----------------------------------------
+// Room — Game room with settings
+// ----------------------------------------
+model Room {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  hostId    String
+  status    String   @default("WAITING")
+  isPrivate Boolean  @default(true)
+  settings  String   @default("{\"rounds\":5,\"roundDuration\":60,\"minPlayers\":2,\"maxPlayers\":10}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  host        Player       @relation("HostedRooms", fields: [hostId], references: [id])
+  roomPlayers RoomPlayer[]
+  games       Game[]
+
+  @@index([code])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ----------------------------------------
+// RoomPlayer — Junction table for room membership
+// ----------------------------------------
+model RoomPlayer {
+  id       String   @id @default(uuid())
+  roomId   String
+  playerId String
+  isHost   Boolean  @default(false)
+  isOnline Boolean  @default(true)
+  isReady  Boolean  @default(false)
+  joinedAt DateTime @default(now())
+
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, playerId])
+  @@index([roomId])
+  @@index([playerId])
+}
+
+// ----------------------------------------
+// Game — A single game instance within a room
+// ----------------------------------------
+model Game {
+  id           String    @id @default(uuid())
+  roomId       String
+  status       String    @default("WAITING")
+  currentRound Int       @default(0)
+  totalRounds  Int       @default(5)
+  usedLetters  String    @default("")
+  startedAt    DateTime?
+  finishedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  room        Room          @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  rounds      Round[]
+  gameHistory GameHistory[]
+
+  @@index([roomId])
+  @@index([status])
+}
+
+// ----------------------------------------
+// Round — A single round within a game
+// ----------------------------------------
+model Round {
+  id          String    @id @default(uuid())
+  gameId      String
+  roundNumber Int
+  letter      String
+  status      String    @default("PENDING")
+  duration    Int       @default(60)
+  startedAt   DateTime?
+  endedAt     DateTime?
+
+  game    Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  answers Answer[]
+
+  @@unique([gameId, roundNumber])
+  @@index([gameId])
+}
+
+// ----------------------------------------
+// Answer — A player's answer for a single category in a round
+// ----------------------------------------
+model Answer {
+  id        String   @id @default(uuid())
+  roundId   String
+  playerId  String
+  category  String
+  value     String
+  isValid   Boolean  @default(false)
+  score     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  round  Round  @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([roundId, playerId, category])
+  @@index([roundId])
+  @@index([playerId])
+  @@index([roundId, category])
+}
+
+// ----------------------------------------
+// GameHistory — Final results for each player in a game
+// ----------------------------------------
+model GameHistory {
+  id         String   @id @default(uuid())
+  gameId     String
+  playerId   String
+  totalScore Int      @default(0)
+  rank       Int
+  finishedAt DateTime @default(now())
+
+  game   Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, playerId])
+  @@index([playerId])
+  @@index([finishedAt])
+}
+
+// ----------------------------------------
+// PlayerStats — Aggregated statistics per player
+// ----------------------------------------
+model PlayerStats {
+  id          String @id @default(uuid())
+  playerId    String @unique
+  gamesPlayed Int    @default(0)
+  gamesWon    Int    @default(0)
+  totalScore  Int    @default(0)
+  avgScore    Float  @default(0)
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}

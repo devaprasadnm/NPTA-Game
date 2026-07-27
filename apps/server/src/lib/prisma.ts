@@ -6,11 +6,11 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
 
-// Load .env files with override: true so local dev config takes precedence over shell env
-dotenv.config({ path: path.resolve(process.cwd(), 'apps/server/.env'), override: true });
-dotenv.config({ path: path.resolve(process.cwd(), '.env'), override: true });
+// Load .env files if present, without overriding environment variables set by host
+dotenv.config({ path: path.resolve(process.cwd(), 'apps/server/.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-if (!process.env['DATABASE_URL'] || !process.env['DATABASE_URL'].startsWith('file:')) {
+if (!process.env['DATABASE_URL']) {
   process.env['DATABASE_URL'] = 'file:./dev.db';
 }
 

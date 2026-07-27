@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "prisma generate && tsc && tsc-alias",
+    "build": "npx prisma generate && tsc && tsc-alias",
     "start": "node dist/index.js",
     "test": "npx tsx --test src/__tests__/engine.test.ts",
     "typecheck": "tsc --noEmit",

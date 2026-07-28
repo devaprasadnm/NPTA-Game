@@ -2,8 +2,8 @@
 // REST API Request/Response Types
 // ============================================
 
-import type { RoomInfo, PlayerInfo, RoomSettings } from './room';
-import type { LeaderboardEntry, GameInfo } from './game';
+import type { RoomInfo, PlayerInfo, RoomSettings } from './room.js';
+import type { LeaderboardEntry, GameInfo } from './game.js';
 
 // ----------------------------------------
 // Auth

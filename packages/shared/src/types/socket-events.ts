@@ -2,14 +2,14 @@
 // Socket.IO Event Type Definitions
 // ============================================
 
-import type { RoomSettings, RoomInfo, PlayerInfo } from './room';
+import type { RoomSettings, RoomInfo, PlayerInfo } from './room.js';
 import type {
   RoundAnswers,
   RoundResult,
   LeaderboardEntry,
   GameInfo,
   RoundInfo,
-} from './game';
+} from './game.js';
 
 // ----------------------------------------
 // Client → Server Events

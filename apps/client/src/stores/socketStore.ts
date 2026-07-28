@@ -20,7 +20,7 @@ interface SocketState {
   setError: (error: string | null) => void;
 }
 
-const WS_URL = import.meta.env.VITE_WS_URL ?? '';
+const WS_URL = import.meta.env.VITE_WS_URL || 'https://npta-game.onrender.com';
 
 export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,

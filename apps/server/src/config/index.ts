@@ -35,7 +35,7 @@ export const config = {
   isProduction: getEnv('NODE_ENV', 'development') === 'production',
 
   cors: {
-    origin: getEnv('CORS_ORIGIN', 'http://localhost:5173'),
+    origin: getEnv('CORS_ORIGIN', 'http://localhost:5173') + ',https://npta-game.vercel.app,https://npta-game-client.vercel.app',
   },
 
   session: {

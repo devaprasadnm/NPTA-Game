@@ -18,9 +18,14 @@ import gameRoutes from './routes/gameRoutes.js';
 import healthRoutes from './routes/healthRoutes.js';
 import { prisma } from './lib/prisma.js';
 import { SessionService } from './services/SessionService.js';
+import { datasetLoader } from './data/datasetLoader.js';
 import { logger } from './utils/logger.js';
 
 async function main() {
+  // ---- Load Word Datasets into Memory ----
+  // Must run before any request handling to ensure O(1) lookups are ready.
+  datasetLoader.load();
+
   // ---- Express Setup ----
   const app = express();
   const httpServer = createServer(app);

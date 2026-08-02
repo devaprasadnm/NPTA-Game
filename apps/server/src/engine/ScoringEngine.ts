@@ -46,7 +46,7 @@ export class ScoringEngine {
 
       for (const pa of playerAnswers) {
         const answer = pa.answers[categoryKey] ?? '';
-        const validation = ValidationEngine.validateAnswer(answer, letter);
+        const validation = ValidationEngine.validateAnswer(answer, letter, category as Category);
 
         if (validation.isValid) {
           const normalized = normalizeAnswer(answer);
@@ -59,7 +59,7 @@ export class ScoringEngine {
       // Now assign scores
       for (const pa of playerAnswers) {
         const answer = pa.answers[categoryKey] ?? '';
-        const validation = ValidationEngine.validateAnswer(answer, letter);
+        const validation = ValidationEngine.validateAnswer(answer, letter, category as Category);
 
         let score = SCORE_INVALID;
         let isValid = false;
